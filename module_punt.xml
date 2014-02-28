@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_punt" default="compile.module.punt">
+  <dirname property="module.punt.basedir" file="${ant.file.module_punt}"/>
+  
+  <property name="module.jdk.home.punt" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.punt" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.punt" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.punt" value="-encoding UTF-8 -source 1.6 ${compiler.args}"/>
+  
+  <property name="punt.output.dir" value="${module.punt.basedir}/out/production/punt"/>
+  <property name="punt.testoutput.dir" value="${module.punt.basedir}/out/test/punt"/>
+  
+  <path id="punt.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="punt.module.production.classpath">
+    <path refid="${module.jdk.classpath.punt}"/>
+    <path refid="library.tomcat_6.0.classpath"/>
+    <path refid="library.asm-3.1.classpath"/>
+  </path>
+  
+  <path id="punt.runtime.production.module.classpath">
+    <pathelement location="${punt.output.dir}"/>
+    <path refid="library.asm-3.1.classpath"/>
+  </path>
+  
+  <path id="punt.module.classpath">
+    <path refid="${module.jdk.classpath.punt}"/>
+    <pathelement location="${punt.output.dir}"/>
+    <path refid="library.tomcat_6.0.classpath"/>
+    <path refid="library.asm-3.1.classpath"/>
+  </path>
+  
+  <path id="punt.runtime.module.classpath">
+    <pathelement location="${punt.testoutput.dir}"/>
+    <pathelement location="${punt.output.dir}"/>
+    <path refid="library.tomcat_6.0.classpath"/>
+    <path refid="library.asm-3.1.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.punt">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.punt">
+    <patternset refid="excluded.from.module.punt"/>
+  </patternset>
+  
+  <path id="punt.module.sourcepath">
+    <dirset dir="${module.punt.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.punt" depends="compile.module.punt.production,compile.module.punt.tests" description="Compile module punt"/>
+  
+  <target name="compile.module.punt.production" description="Compile module punt; production classes">
+    <mkdir dir="${punt.output.dir}"/>
+    <javac destdir="${punt.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.punt}/javac">
+      <compilerarg line="${compiler.args.punt}"/>
+      <bootclasspath refid="punt.module.bootclasspath"/>
+      <classpath refid="punt.module.production.classpath"/>
+      <src refid="punt.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.punt"/>
+    </javac>
+    
+    <copy todir="${punt.output.dir}">
+      <fileset dir="${module.punt.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.punt.tests" depends="compile.module.punt.production" description="compile module punt; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.punt" description="cleanup module">
+    <delete dir="${punt.output.dir}"/>
+    <delete dir="${punt.testoutput.dir}"/>
+  </target>
+</project>
