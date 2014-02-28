@@ -4,6 +4,23 @@ punter
 
 dummy tomcat/java war repo to use as source for devops practice deploys.  The idea is to roll out tomcat on hosts and then run these configs.  bonus points for running apache in front of them.
 
+
+#### test war install
+
+First confirm that the war installed at all at url:
+
+```
+http://localhost:8080/punter/punt/
+```
+
+This should return the following:
+
+```
+{'status':'ok'}
+```
+
+#### test static file and template placement
+
 Url you'll be hitting is:
 ```
 http://localhost:8080/punter/punt/test
@@ -20,3 +37,5 @@ The output will look something like
 ```
 [{"key":"conf1","val":"static"},{"key":"conf2","val":"chef"}]
 ```
+
+**Note**: you can use whatever value you like in the properties files, but the java code searches for key "test".
